@@ -1,0 +1,221 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+
+  <!-- DISCLAIMER
+  ==================================================
+  The code below is not intended to be perfect, but to showcase various techniques and skills.
+  ie: DOM manipulation, states, features, and more.
+  -->
+
+  <title>Web Coding Example</title>
+
+  <!-- CSS
+  ================================================== -->
+  <style>
+
+    /* === container flexbox === */
+    .container {
+      display: flex;
+
+      justify-content: center;
+      align-items: center;
+    }
+
+    #cube, #triangle, #circle {
+      text-align: center;
+      margin: 15px;
+    }
+
+    /* CUBE
+    ====================== */
+    #cube {
+      width: 100px;
+      height: 100px;
+      position: relative;
+      color: #F0F8FF;
+      line-height: 100px;
+      background: linear-gradient(to bottom, #000000, #808080, #000000);
+      animation: cubeAnimate 2s linear infinite;
+    }
+
+    /* TRIANGLE
+    ====================== */
+    #triangle {
+      width: 0;
+      height: 0;
+      position: relative;
+      border-left: 100px solid transparent;
+      border-right: 100px solid transparent;
+      border-bottom: 100px solid;
+      justify-content: center;
+      color: #FF0000;
+      line-height: 0;
+      animation: triangleAnimate 2s linear infinite;
+    }
+
+    /* === triangle span text === */
+    #triangle span {
+      width: auto;
+      height: auto;
+      position: absolute;
+      color: #F0F8FF;
+      bottom: -80px;
+      left: -100px;
+      right: -100px;
+    }
+
+    /* CIRCLE
+    ====================== */
+    #circle {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      position: relative;
+      line-height: 150px;
+      background: radial-gradient(#228B22, #006400);
+      animation: circleAnimate 2s linear infinite;
+    }
+
+    /* === circle span text === */
+    #circle span {
+      display: inline-block;
+      vertical-align: middle;
+      line-height: normal;
+      color: #F0F8FF;
+      padding: 0 25px;
+    }
+
+  </style>
+
+  <!-- JAVASCRIPT
+  ================================================== -->
+  <script type="text/javascript" src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+
+  <script>
+    // on window load
+    $(window).load(function(){
+
+      // adds class="container" to the first div
+      $("div").addClass("container");
+
+      // restructures the divs within container - adds appropriate ids
+      $("div:contains(This is a)").html(
+              '<div id="cube">This is a cube</div>' +
+              '<div id="triangle"><span>This is a triangle</span></div>' +
+              '<div id="circle"><span>This is a big, green circle</span></div>'
+      );
+
+      /* CUBE
+      ====================== */
+      let cube = document.getElementById("cube");
+      let cubePosition = -200;
+      let cubeMaxPosition = 200;
+      let cubeSpeed = 5;
+      let cubePause = false;
+
+      function cubeAnimate() {
+        cube.style.top = cubePosition + "px";
+
+        cubePosition += cubeSpeed;
+
+        // invert cubeSpeed when hitting (+/-)cubeMaxPosition
+        if (cubePosition > cubeMaxPosition || cubePosition < -cubeMaxPosition && !cubePause) {
+          cubeSpeed *= (-1);
+        }
+
+        // when cubePosition returns to default - pause, reset speed, then unpause
+        if (cubePosition <= -cubeMaxPosition && !cubePause) {
+          cubePause = true;
+          cubeSpeed = 0;
+
+          setTimeout(function() {
+            cubeSpeed = 5;
+            cubePause = false;
+          }, 2000);
+
+        }
+        requestAnimationFrame(cubeAnimate);
+      }
+
+      /* TRIANGLE
+      ====================== */
+      let triangle = document.getElementById("triangle");
+      let trianglePosition = 200;
+      let triangleMaxPosition = -200;
+      let triangleSpeed = -5;
+      let trianglePause = false;
+
+      function triangleAnimate() {
+        triangle.style.top = trianglePosition + "px";
+
+        trianglePosition += triangleSpeed;
+
+        // invert triangleSpeed when hitting (+/-)triangleMaxPosition
+        if (trianglePosition < triangleMaxPosition || trianglePosition > -triangleMaxPosition && !trianglePause) {
+          triangleSpeed *= (-1);
+        }
+
+        // when trianglePosition returns to default - pause, reset speed, then unpause
+        if (trianglePosition >= -triangleMaxPosition && !trianglePause) {
+          trianglePause = true;
+          triangleSpeed = 0;
+
+          setTimeout(function() {
+            triangleSpeed = -5;
+            trianglePause = false;
+
+            // =!= triangle handles the circle pause for synchronization =!=
+            circleSpeed = 2.25;
+            circlePause = false;
+          }, 2000);
+
+        }
+        requestAnimationFrame(triangleAnimate);
+      }
+
+      /* CIRCLE
+      ====================== */
+      let circle = document.getElementById("circle");
+      let circleAngle = 0;
+      let circleMaxAngle = 360;
+      let circleSpeed = 2.25;
+      let circlePause = false;
+
+      function circleAnimate() {
+        circle.style.rotate = circleAngle + "deg";
+
+        circleAngle += circleSpeed;
+
+        // when circle completes full rotation - pause and reset angle to default
+        if (circleAngle >= circleMaxAngle && !circlePause) {
+          circlePause = true;
+          circleSpeed = 0;
+          circleAngle = 0;
+
+          // =!= circlePause located in triangle for synchronization =!=
+
+        }
+        requestAnimationFrame(circleAnimate);
+      }
+
+      // play animations
+      cubeAnimate();
+      triangleAnimate();
+      circleAnimate();
+
+    });
+
+  </script>
+
+</head>
+<body>
+
+  <div style="width:800px;height:800px;border: medium #999999 solid">
+    <div>This is a cube</div>
+    <div>This is a triangle</div>
+    <div>This is a big, green circle</div>
+  </div>
+
+</body>
+</html>
